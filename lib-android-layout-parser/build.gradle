@@ -17,6 +17,6 @@ repositories {
 }
 
 dependencies {
-	implementation 'com.github.Grishberg:lib-android-layout-parser-core:1.0.0'
+	implementation 'com.github.Grishberg:lib-android-layout-parser-core:1.1.0'
     implementation 'com.google.code.gson:gson:2.8.5'
 }
