@@ -9,13 +9,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class ViewNode implements Node {
+	enum ForcedState {
+        NONE,
+        VISIBLE,
+        INVISIBLE
+    }
     final Node parent;
     final String name;
     final String hash;
     int index = 0;
     String id;
     List<NodeProperty> properties = Collections.emptyList();
-    HashMap<String, NodeProperty> groupedProperties = new HashMap<>();
+    HashMap<String, List<NodeProperty>> groupedProperties = new HashMap<>();
     HashMap<String, NodeProperty> namedProperties = new HashMap<>();
     private LinkedList<Node> children = new LinkedList<>();
 
@@ -62,6 +67,34 @@ public class ViewNode implements Node {
     }
 
     void setProperties(List<NodeProperty> properties) {
+		for (NodeProperty property: properties)
+		{
+			namedProperties.put(property.fullName(), property);
+			addPropertyToGroup(property);
+		}
+    }
 
+	private void addPropertyToGroup(NodeProperty p) {
+		String key = getKey(p);
+        List<NodeProperty> propertiesList = groupedProperties.get(key);
+		if (propertiesList == null)
+		{
+            propertiesList = new LinkedList<>();
+			groupedProperties.put(key, propertiesList);
+        }
+        propertiesList.add(p);
+	}
+
+	private String getKey(NodeProperty p) {
+		String cat = p.category();
+		if (cat != null)
+		{
+			return cat;
+		} 
+		if (p.fullName().endsWith("()"))
+		{
+            return "methods";
+        } 
+        return "properties";
     }
 }

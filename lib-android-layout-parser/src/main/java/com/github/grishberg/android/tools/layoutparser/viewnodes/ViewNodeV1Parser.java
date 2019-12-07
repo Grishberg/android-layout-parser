@@ -82,10 +82,10 @@ public class ViewNodeV1Parser implements ViewNodeParser {
         ViewNode node = new ViewNode(parent, name, hash);
         node.index = parent == null ? 0 : parent.childCount();
         if (data.length() > delimIndex + 1) {
-            node.properties = loadProperties(data.substring(delimIndex + 1), skippedProperties);
-//            node.id = node.getProperty("mID", "id").value
+            node.setProperties(loadProperties(data.substring(delimIndex + 1), skippedProperties));
+            node.id = node.getProperty("mID", "id").value();
         }
-//        node.displayInfo = DisplayInfoFactory.createDisplayInfoFromNode(node)
+        //node.displayInfo = DisplayInfoFactory.createDisplayInfoFromNode(node)
 		if(parent != null){
 			parent.addChild(node);
 		}
@@ -93,7 +93,7 @@ public class ViewNodeV1Parser implements ViewNodeParser {
     }
 	
 	private List<NodeProperty> loadProperties(String data, 
-												Collection<String> skippedProperties){
+												Collection<String> skippedProperties) {
 		ArrayList<NodeProperty> properties = new ArrayList<>();
 		int start = 0;
         boolean stop;
@@ -105,9 +105,7 @@ public class ViewNodeV1Parser implements ViewNodeParser {
             start = index2 + 1 + length;
             if (!skippedProperties.contains(fullName)) {
                 String value = data.substring(index2 + 1, index2 + 1 + length);
-                ViewNodeProperty property = parseViewProperty(fullName, value);
-                //node.namedProperties[property.fullName] = property;
-                //node.addPropertyToGroup(property);
+                properties.add(parseViewProperty(fullName, value));
             }
             stop = start >= data.length();
             if (!stop) {
